@@ -5,7 +5,7 @@ package tree;
  */
 public class IntervalTree extends RedBlackTree {
 
-	static class INode extends Node {
+	public static class INode extends Node {
 		
 		Interval i;
 		
@@ -24,6 +24,14 @@ public class IntervalTree extends RedBlackTree {
 			}
 			return false;
 		}
+		
+		public Interval getI() {
+			return i;
+		}
+
+		public int getMax() {
+			return max;
+		}
 
 		@Override
 		public String toString() {
@@ -38,17 +46,31 @@ public class IntervalTree extends RedBlackTree {
 			this.low = low;
 			this.high = high;
 		}
+
+		public int getLow() {
+			return low;
+		}
+
+		public int getHigh() {
+			return high;
+		}
 	}
 	
 	public Node insert(int low, int high) {
 		return super.insert(new INode(low, high));
 	}
 	
-	public Node delete(int low, int high) {
+	/**
+	 * @return 被删除的重叠的区间. 没有找到重叠区间时返回null
+	 */
+	public Interval delete(int low, int high) {
 		Node z = search(ROOT, low, high);
-		return super.delete(z);
+		return (z = super.delete(z)) == null ? null : ((INode)z).i;
 	}
 	
+	/**
+	 * 查找重叠的区间
+	 */
 	public Node search(Node t, int low, int high) {
 		if(t == null) t = ROOT;
 		while(t != NIL && (high < ((INode)t).i.low || ((INode)t).i.high < low)) {
@@ -126,6 +148,12 @@ public class IntervalTree extends RedBlackTree {
 	protected void afterRightRotate(Node z) {
 		afterRotate(z);
 	}
+	
+//	@Override
+//	void inOrderHandler(Node x) {
+//		INode z = (INode)x;
+//		System.out.printf("[key=%d\tmax=%d\tlow=%d\thigh=%d]%n", z.key, z.max, z.i.low, z.i.high);
+//	}
 	
 	@Override
 	void inOrderHandler(Node x) {

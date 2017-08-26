@@ -1,11 +1,14 @@
 package tree;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * 红黑树（CLRS）
  */
 public class RedBlackTree {
 	
-	static class Node {
+	public static class Node {
 		
 		protected int key;
 		
@@ -27,9 +30,11 @@ public class RedBlackTree {
 		}
 	}
 	
-	protected static boolean BLACK = true, RED = false;
+	protected static final boolean BLACK = true, RED = false;
 	
-	protected static Node NIL = new Node(BLACK), ROOT = NIL;
+	protected static final Node NIL = new Node(BLACK);
+	
+	protected Node ROOT = NIL;
 	
 	/**
 	 * 6个引用需改变
@@ -310,6 +315,7 @@ public class RedBlackTree {
 	 * 子树最小值
 	 */
 	public Node min(Node t) {
+		if(t == null) t = ROOT;
 		for(; t.left != NIL; t = t.left);
 		return t;
 	}
@@ -318,6 +324,7 @@ public class RedBlackTree {
 	 * 子树最大值
 	 */
 	public Node max(Node t) {
+		if(t == null) t = ROOT;
 		for(; t.right != NIL; t = t.right);
 		return t;
 	}
@@ -380,6 +387,42 @@ public class RedBlackTree {
 		System.out.printf("%d ", x.key);
 	}
 	
+	Nodes nodes = null;
+	
+	public Iterable<Node> nodes() {
+		Iterable<Node> vs = nodes;
+        return (vs != null) ? vs : (nodes = new Nodes());
+    }
+	
+	class Nodes implements Iterable<Node> {
+
+		@Override
+		public Iterator<Node> iterator() {
+			return new NodeIterator(min(null));
+		}
+    }
+	
+	class NodeIterator implements Iterator<Node> {
+		
+        Node next;
+
+        NodeIterator(Node first) {
+            next = first;
+        }
+
+        public final boolean hasNext() {
+            return next != NIL;
+        }
+        
+        public Node next() {
+        	Node e = next;
+            if (e == null)
+                throw new NoSuchElementException();
+            next = successor(e);
+            return e;
+        }
+    }
+	
 	/**
 	 * 验证二叉树、红黑树性质
 	 */
@@ -425,7 +468,7 @@ public class RedBlackTree {
 		
 		rbt.verify(null);
 //		
-		rbt.inOrder(ROOT);
+		rbt.inOrder(null);
 //		
 		rbt.delete(16);
 //		rbt.delete(17);
@@ -439,7 +482,7 @@ public class RedBlackTree {
 		
 		rbt.verify(null);
 //		
-		rbt.inOrder(ROOT);
+		rbt.inOrder(null);
 		
 //		System.out.println(rbt.blackHeight(null));
 		
