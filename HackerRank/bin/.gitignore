@@ -1,9 +1,7 @@
-/Solution$Pair.class
-/Solution.class
-/Test.class
 /bit/
 /dp/
 /greedy/
+/hash/
 /heap/
 /implementation/
 /recursion/
@@ -13,4 +11,3 @@
 /string/
 /tree/
 /trie/
-/hash/
