@@ -1,32 +1,31 @@
-package disjointset;
+package graph;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 
-/**
- * CLRS
- */
-public class DisjointSet {
+class Node {
+	
+	int key;
+	
+	Node p;
+	
+	int rank, size;
 
-	public static class Node {
-		
-		int key;
-		
-		Node p;
-		
-		int rank, size;
-
-		public Node(int key) {
-			this.key = key;
-			this.p = this;
-			this.rank = 0;
-			this.size = 1;
-		}
-
-		public int getSize() {
-			return size;
-		}
-		
+	public Node(int key) {
+		this.key = key;
+		this.p = this;
+		this.rank = 0;
+		this.size = 1;
 	}
+
+	public int getSize() {
+		return size;
+	}
+	
+}
+
+class DisjointSet {
 	
 	Node[] nodes;
 	
@@ -117,5 +116,57 @@ public class DisjointSet {
 			return n;
 		}
 		
+	}
+}
+
+public class JourneyToTheMoon {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		int n = sc.nextInt();
+		int p = sc.nextInt();
+		
+		DisjointSet djs = new DisjointSet(n);
+		
+		for(int v = 0; v < n; v++) {
+			djs.makeSet(v);
+		}
+		
+		for(int i = 0; i < p; i++) {
+			Node u = djs.findSet(sc.nextInt());
+			Node v = djs.findSet(sc.nextInt());
+			if(u != v) {
+				djs.link(u, v);
+			}
+		}
+		
+		sc.close();
+		
+		ArrayList<Integer> a = new ArrayList<Integer>();
+		long zero = 0;
+		for(Iterator<Node> it = djs.representatives(); it.hasNext(); ) {
+			int s = it.next().getSize();
+			if(s > 1) {
+				a.add(s);
+			}else {
+				zero++;
+			}
+		}
+		
+		long s = 0;
+		for(int i = 0; i < a.size() - 1; i++) {
+			for(int j = i + 1; j < a.size(); j++) {
+				s += a.get(i) * a.get(j);
+			}
+		}
+		
+		for(int i = 0; i < a.size(); i++) {
+			s += a.get(i) * zero;
+		}
+		
+		s += (zero * (zero - 1)) >> 1;
+		
+		System.out.println(s);
 	}
 }
